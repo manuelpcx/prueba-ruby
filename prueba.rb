@@ -13,13 +13,10 @@ while opcion != 4
     def alumnos(name, nota1, nota2, nota3, nota4, nota5)
       prom = Hash.new
       prom[name]=[nota1, nota2, nota3, nota4, nota5]
+      prom 
       prom.each do |key, val|
-        nota= Array.new
-        nombres= Array.new
-        nombres.push(key)
-        nota.push(val)
-        puts nombres
-        print nota
+        n = val.inject(0){|suma, val| suma + val.to_i}
+        puts "#{key} #{n/val.length}"
       end
     end
 
@@ -58,15 +55,35 @@ while opcion != 4
     end
 
   when 3
-    def aprobados(name)
-      file = File.open(name, 'r')
-      data = file.readlines
-      file.close
-
+    def inasistencias(name, nota1, nota2, nota3, nota4, nota5)
+      inas = Hash.new
+      inas[name]=[nota1, nota2, nota3, nota4, nota5]
+      inas.each do |key, val|
+        n = val.inject(0){|suma, val| suma + val.to_i}
+        n = n/val.length
+        aprueba = Hash.new
+        aprueba[name]= n 
+        aprueba
+        puts 'Ingrese la nota para aprobar'
+        nota = gets.chomp.to_i
+        aprueba.each do |key, val|
+          if val >= nota
+            puts "#{key} Aprueba"
+          end
+        end
+      end
     end
+    file = File.open('Alumnos.csv', 'r')
+    data = file.readlines.map(&:chomp)
+    file.close
 
-    aprobados('Alumnos.csv')
-
+    data.each do |x|
+      ina = Array.new
+      ina << x.split(", ")
+      ina.map do |slice|
+        inasistencias(*slice)
+      end
+    end
 
   when 4
   end
